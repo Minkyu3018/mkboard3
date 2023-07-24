@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<body>
+
+  <div>
+
+    <form method="get" action="/board/regist" >
+      <button>Register</button>
+    </form>
+    
+    
+    <form class="actionForm" method="get">
+      <table class="boardTable">
+        <tr th:each="dto: ${dto}">
+          <td>[[${dto.bno}]]</td>
+          <td th:data-bno="${dto.bno}">[[${dto.title}]]</td>
+          <td>[[${dto.writer}]]</td>
+        </tr>
+      </table>
+      
+    </form>
+
+    
+
+  </div>
+
+  <script>
+
+    const boardTable = document.querySelector(".boardTable")
+    const actionForm = document.querySelector(".actionForm")
+
+    boardTable.addEventListener("click", (e) => {
+
+      const target = e.target
+
+      if(!target.getAttribute("data-bno")){
+        
+        return
+      }
+
+      const bno = target.getAttribute("data-bno")
+
+      console.log("BNO: " + bno)
+
+      actionForm.setAttribute("action", `/board/read/${bno}`)
+      actionForm.submit()
+
+    }, false)
+
+
+  </script>
+
+  
+</body>
+</html>

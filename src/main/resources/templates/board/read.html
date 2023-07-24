@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<body>
+  
+  <div>
+
+    <div>[[${dto.bno}]]</div>
+    <div>[[${dto.title}]]</div>
+    <div>[[${dto.content}]]</div>
+    <div>[[${dto.writer}]]</div>
+    <div>[[${dto.duedate}]]</div>
+    
+    <form class="actionForm">
+      <button class="btnModify">수정</button>
+      <button class="btnDelete">삭제</button>
+    </form>
+    
+    
+
+    
+
+  </div>
+  
+  <script> 
+
+    const btnModify = document.querySelector(".btnModify")
+    const btnDelete = document.querySelector(".btnDelete")
+    const actionForm = document.querySelector(".actionForm")
+
+    
+
+    btnModify.addEventListener("click", (e) => {
+      actionForm.setAttribute("action", `/board/modify/[[${ dto.bno }]]`)
+      actionForm.setAttribute("method", `get`)
+      actionForm.submit();
+    })
+
+    btnDelete.addEventListener("click", (e) => {
+      actionForm.setAttribute("action", `/board/delete/[[${ dto.bno }]]`)
+      actionForm.setAttribute("method", `post`)
+      actionForm.submit();
+    })
+
+
+  </script>
+
+  
+  
+</body>
+</html>
