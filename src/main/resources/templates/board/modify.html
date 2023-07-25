@@ -2,51 +2,78 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 
+<style>
+  div .modify {
+    border: 2px solid black; 
+    margin-bottom: 4px;
+    margin-top: 4px;
+    padding: 4px;
+  }
+
+  button {
+    background-color: rgba(73, 107, 219, 0.708);
+    width: 80px;
+    height: 30px;
+    font-size: 18px;
+    border-radius: 10px ;
+    
+  }
+
+</style>      
+
 <body>
 
   
   
   <div>
 
-  <form method="post" class="actionForm">
-    <div>
-      <input type="text" name="title" th:value="${dto.title}"/>
+    <h1>Modify Page</h1>
+
+    <form method="post" class="actionForm">
+      <div class="modify">
+        <input type="text" name="title" th:value="${dto.title}"/>
+      </div>
+
+      <div class="modify">
+        <input type="text" name="content" th:value="${dto.content}"/>
+      </div>
+
+      <div class="modify">
+        <input type="text" name="writer" th:value="${dto.writer}"/>
+      </div>
+
+    
+      <button class="btnModify">수정</button>
+      <button class="btnDelete">삭제</button>
+    </form>
+    <br>
+
+    <form method="get" action="/board/list">
+      <button>리스트</button>
+      
+    </form>
+
     </div>
 
-    <div>
-      <input type="text" name="content" th:value="${dto.content}"/>
-    </div>
+    <script layout:fragment="script" th:inline="javascript">
+      const btnModify = document.querySelector(".btnModify")
+      const btnDelete = document.querySelector(".btnDelete")
+      const actionForm = document.querySelector(".actionForm")
 
-    <div>
-      <input type="text" name="writer" th:value="${dto.writer}"/>
-    </div>
+      btnModify.addEventListener("click", (e) => {
 
-  
-    <button class="btnModify">수정</button>
-    <button class="btnDelete">삭제</button>
-  </form>
+        actionForm.setAttribute("action", `/board/modify/[[${dto.bno}]]`)
+        actionForm.submit()
+      })
 
-  </div>
+      btnDelete.addEventListener("click", (e) => {
 
-  <script layout:fragment="script" th:inline="javascript">
-    const btnModify = document.querySelector(".btnModify")
-    const btnDelete = document.querySelector(".btnDelete")
-    const actionForm = document.querySelector(".actionForm")
-
-    btnModify.addEventListener("click", (e) => {
-
-      actionForm.setAttribute("action", `/board/modify/[[${dto.bno}]]`)
+      actionForm.setAttribute("action", `/board/delete/[[${dto.bno}]]`)
       actionForm.submit()
-    })
-
-    btnDelete.addEventListener("click", (e) => {
-
-    actionForm.setAttribute("action", `/board/delete/[[${dto.bno}]]`)
-    actionForm.submit()
-    })
+      })
 
 
-  </script>
+    </script>
   
 </body>
 </html>

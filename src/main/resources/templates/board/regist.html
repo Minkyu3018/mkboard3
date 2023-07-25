@@ -2,27 +2,52 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 
+<style>
+  div .regist {
+    border: 2px solid black; 
+    margin-bottom: 4px;
+    margin-top: 4px;
+    padding: 4px;
+  }
+
+  button {
+    background-color: rgb(197, 194, 194);
+    width: 80px;
+    height: 30px;
+    font-size: 18px;
+    border-radius: 10px ;
+    
+  }
+</style>
+
 <body>
 
+  <h1>Regist Page</h1>
   <div>
     <form method="post" action="/board/regist">
-      <div>
+      <div class="regist">
         제목
         <input type="text" name="title">
       </div>
 
-      <div>
+      <div class="regist">
         내용
         <input type="text" name="content">
       </div>
       
-      <div>
+      <div class="regist">
         작성자
         <input type="text" name="writer">
       </div>
       
       <button type="submit">등록</button>
 
+    </form>
+    <br>
+
+    <form method="get" action="/board/list">
+      <button>리스트</button>
+      
     </form>
 
   </div>

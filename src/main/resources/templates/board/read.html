@@ -2,24 +2,51 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 
-<body>
+<style>
+
+  div .list {
+    border: 2px solid black; 
+    margin-bottom: 4px;
+    margin-top: 4px;
+    padding: 4px;
+  }
+
+  button {
+    background-color: rgb(197, 194, 194);
+    width: 80px;
+    height: 30px;
+    font-size: 18px;
+    border-radius: 10px ;
+    
+  }  
+
   
+</style>
+
+<body>
+
+   
   <div>
 
-    <div>[[${dto.bno}]]</div>
-    <div>[[${dto.title}]]</div>
-    <div>[[${dto.content}]]</div>
-    <div>[[${dto.writer}]]</div>
-    <div>[[${dto.duedate}]]</div>
+    <h1>Read Page</h1>
+
+    <form method="get" action="/board/list">
+      <button>리스트</button>
+      
+    </form>
+    <br>
+
+    <div class="list">[[${dto.bno}]]</div>
+    <div class="list">[[${dto.title}]]</div>
+    <div class="list">[[${dto.content}]]</div>
+    <div class="list">[[${dto.writer}]]</div>
+    <div class="list">[[${dto.duedate}]]</div>
     
     <form class="actionForm">
       <button class="btnModify">수정</button>
       <button class="btnDelete">삭제</button>
     </form>
-    
-    
 
-    
 
   </div>
   

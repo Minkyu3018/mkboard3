@@ -2,17 +2,43 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 
+<style>
+  tr, td {
+    border: solid 2px black;
+    width: 150px;
+    padding: 6px;
+  }
+  
+  button {
+    background-color: rgba(73, 107, 219, 0.708);
+    width: 80px;
+    height: 30px;
+    font-size: 18px;
+    border-radius: 10px ;
+    
+  }
+</style>
+
 <body>
 
   <div>
 
+    <h1>List Page</h1>
+
     <form method="get" action="/board/regist" >
       <button>Register</button>
     </form>
+    <br>
     
     
     <form class="actionForm" method="get">
-      <table class="boardTable">
+      <table class="boardTable" >
+        <tr style="font-weight: bold;">
+          <td>Bno</td>
+          <td>Title</td>
+          <td>Writer</td>
+        </tr>
+
         <tr th:each="dto: ${dto}">
           <td>[[${dto.bno}]]</td>
           <td th:data-bno="${dto.bno}">[[${dto.title}]]</td>
