@@ -47,16 +47,106 @@
       <button class="btnDelete">삭제</button>
     </form>
 
+    <br>
+    <br>
+    댓글
+    <div>
+      <input type = "text" name = "reply" id="replyInput" value="AAAA">
+      <input type = "text" name = "replyer" id="replyInput" value="USER00">
+      <button type="button" class="btnReply">ADD</button>
+    </div>
+
+
+
+    <div>
+      <ul class = "replyUL" >
+
+      </ul>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
   </div>
   
-  <script> 
+  <script th:inline = "javascript"> 
 
+
+
+    // 수정,삭제
     const btnModify = document.querySelector(".btnModify")
     const btnDelete = document.querySelector(".btnDelete")
     const actionForm = document.querySelector(".actionForm")
 
+    // 댓글
+    const replyUL = document.querySelector(".replyUL")
+    const {bno} = [[${dto}]]
+
+    const replyBtn = document.querySelector('.btnReply');
+
+
+    // 댓글목록을 가져오는 함수.
+    const getRemoteList = async(pageNum) => {
+      const {data} = await axios.get(`http://localhost:8080/replies/${bno}/list`)
+      
+      console.log(data)
+
+      return data
+
+    }
+
+    let page = 1
+
+    const loadReply = async(page, goEnd = false) => {
+      
+      const data = await getRemoteList(page)
+
+      console.log("loadReply.....")
+      console.log(data)
+
+      const {list, total} = data
+
+      let str = ""
+
+      for(let i = 0; i < list.length; i++) {
+
+        const {rno, reply, replyer} = list[i]
+
+        str += `<li data-rno=${rno}>${rno} - ${reply} - ${replyer}  </li>`
+      } // end for.
+
+      replyUL.innerHTML = str
+
+      console.log("str-----"+str)
+
+      
+    }
+
+    loadReply()    
+
+    const postRemoteAdd = async(reply)=> {
+      const {data} = await axios.post(`http://localhost:8080/replies/${bno}/new`, reply)
+      return data
+    }
+
+    replyBtn.addEventListener("click", e => {
+			const replyVal = document.querySelector("input[name=reply]").value
+			const replyerVal = document.querySelector("input[name=replyer]").value
+
+			const temp = {reply: replyVal, replyer: replyerVal}
+
+			postRemoteAdd(temp).then(result => {
+				console.log(result);
+        loadReply()
+			})
+
+      
+
+		}, false)
+
     
+
+
+
 
     btnModify.addEventListener("click", (e) => {
       actionForm.setAttribute("action", `/board/modify/[[${ dto.bno }]]`)
@@ -70,6 +160,10 @@
       actionForm.submit();
     })
 
+    
+
+    
+    
 
   </script>
 

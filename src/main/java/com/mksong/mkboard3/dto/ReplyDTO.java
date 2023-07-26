@@ -17,7 +17,7 @@ public class ReplyDTO {
   private long rno;
 
   @NotNull
-  private long tno;
+  private long bno;
     
   @NotEmpty
   private String reply;

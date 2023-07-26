@@ -9,9 +9,9 @@ import com.mksong.mkboard3.dto.ReplyDTO;
 
 public interface ReplyMapper {
   
-  int insert(ReplyDTO replyDTO);
+  int replyRegist(ReplyDTO replyDTO);
 
   List<ReplyDTO> selectList(
-        @Param("tno")Long tno, 
+        @Param("bno")Long bno, 
         @Param("pr")PageRequestDTO pageRequestDTO);
 }

@@ -1,6 +1,6 @@
 function makePages(page, size, total) {
 
-  console.log("makePage called......................")
+  // console.log("makePage called......................")
 
   // console.log(page, size, total)
 
