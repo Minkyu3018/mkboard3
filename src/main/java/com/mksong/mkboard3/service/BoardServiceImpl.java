@@ -5,6 +5,8 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.mksong.mkboard3.dto.BoardDTO;
+import com.mksong.mkboard3.dto.PageRequestDTO;
+import com.mksong.mkboard3.dto.PageResponseDTO;
 import com.mksong.mkboard3.mappers.BoardMapper;
 
 import lombok.RequiredArgsConstructor;
@@ -16,10 +18,19 @@ public class BoardServiceImpl implements BoardService{
   private final BoardMapper boardMapper;
 
   @Override
-  public List<BoardDTO> getList() {
-  
-    return boardMapper.getList();
+  public PageResponseDTO<BoardDTO> getList(PageRequestDTO pageRequestDTO) {
+
+    List<BoardDTO> list = boardMapper.getList(pageRequestDTO);
+        long total = boardMapper.listCount(pageRequestDTO);
+
+
+        return PageResponseDTO.<BoardDTO>withAll()
+                .list(list)
+                .total(total)
+                .build();
+
   }
+
 
   @Override
   public BoardDTO getRead(Integer bno) {
@@ -44,6 +55,8 @@ public class BoardServiceImpl implements BoardService{
     
     return boardMapper.delete(bno);
   }
+
+
 
 
 }

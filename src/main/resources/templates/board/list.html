@@ -1,21 +1,21 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 
 <style>
-  tr, td {
+  tr,
+  td {
     border: solid 2px black;
     width: 150px;
     padding: 6px;
   }
-  
+
   button {
     background-color: rgba(73, 107, 219, 0.708);
     width: 80px;
     height: 30px;
     font-size: 18px;
-    border-radius: 10px ;
-    
+    border-radius: 10px;
+
   }
 </style>
 
@@ -25,44 +25,98 @@
 
     <h1>List Page</h1>
 
-    <form method="get" action="/board/regist" >
+    <form method="get" action="/board/regist">
       <button>Register</button>
     </form>
     <br>
-    
-    
-    <form class="actionForm" method="get">
-      <table class="boardTable" >
+
+
+    <form>
+      <table class="boardTable">
         <tr style="font-weight: bold;">
           <td>Bno</td>
           <td>Title</td>
           <td>Writer</td>
         </tr>
 
-        <tr th:each="dto: ${dto}">
+        <tr th:each="dto: ${pageResponseDTO.list}">
           <td>[[${dto.bno}]]</td>
           <td th:data-bno="${dto.bno}">[[${dto.title}]]</td>
           <td>[[${dto.writer}]]</td>
         </tr>
       </table>
-      
+
     </form>
 
-    
+    <div>
+      <ul class="boardUL">
+      </ul>
+    </div>
 
-  </div>
+    <form class="actionForm" action="/board/list" method="get">
+      <input type="hidden" name="page" value="3">
+      <input type="hidden" name="size" value="10">
+    </form>
 
-  <script>
+  
+    <script src="/js/pageUtil.js"></script>
+
+
+
+  </div>  
+
+  <script th:inline="javascript">
 
     const boardTable = document.querySelector(".boardTable")
     const actionForm = document.querySelector(".actionForm")
+    const pageObj = actionForm.querySelector("input[name='page']")
+    const boardUL = document.querySelector(".boardUL")
+
+
+    boardUL.addEventListener("click", (e) => {
+      e.preventDefault()
+      e.stopPropagation()      
+
+      const target = e.target
+      const pageNum = target.getAttribute("href")
+
+      if(!pageNum){
+        return
+      }   
+
+      pageObj.value = pageNum
+
+      actionForm.setAttribute("action", `/board/list`)
+      actionForm.submit()
+
+    }, false)
+
+
+
+    const { page, size } = [[${ pageRequestDTO }]]
+
+    console.log(page, size)
+
+    const { total } = [[${ pageResponseDTO }]]
+
+    console.log("total: " + total)
+
+
+
+    const pageLIStr = makePages(page, size, total)
+
+    console.log("boardUL: " + boardUL)
+
+    boardUL.innerHTML = pageLIStr
+
+
 
     boardTable.addEventListener("click", (e) => {
 
       const target = e.target
 
-      if(!target.getAttribute("data-bno")){
-        
+      if (!target.getAttribute("data-bno")) {
+
         return
       }
 
@@ -71,6 +125,7 @@
       console.log("BNO: " + bno)
 
       actionForm.setAttribute("action", `/board/read/${bno}`)
+      actionForm.setAttribute("method", `get`)
       actionForm.submit()
 
     }, false)
@@ -78,6 +133,7 @@
 
   </script>
 
-  
+
 </body>
+
 </html>

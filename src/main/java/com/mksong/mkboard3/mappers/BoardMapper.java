@@ -5,11 +5,12 @@ import java.util.List;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.mksong.mkboard3.dto.BoardDTO;
+import com.mksong.mkboard3.dto.PageRequestDTO;
 
 @Transactional
 public interface BoardMapper {
 
-  List<BoardDTO> getList();
+  List<BoardDTO> getList(PageRequestDTO pageRequestDTO);
 
   BoardDTO getRead(Integer bno);
 
@@ -18,6 +19,8 @@ public interface BoardMapper {
   int modify(BoardDTO boardDTO);
 
   int delete(Integer bno);
+
+  long listCount(PageRequestDTO pageRequestDTO);
 
 
 

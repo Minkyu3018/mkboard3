@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.mksong.mkboard3.dto.BoardDTO;
+import com.mksong.mkboard3.dto.PageRequestDTO;
+import com.mksong.mkboard3.dto.PageResponseDTO;
 import com.mksong.mkboard3.service.BoardService;
 
 import lombok.RequiredArgsConstructor;
@@ -22,9 +24,12 @@ public class BoardController {
   private final BoardService boardService;
 
   @GetMapping("/list")
-  public void getList(Model model) {
+  public void getList(PageRequestDTO pageRequestDTO, Model model) {
 
-    model.addAttribute("dto", boardService.getList());
+    PageResponseDTO<BoardDTO> pageResponseDTO
+        = boardService.getList(pageRequestDTO);
+
+    model.addAttribute("pageResponseDTO", pageResponseDTO);
 
   }
 

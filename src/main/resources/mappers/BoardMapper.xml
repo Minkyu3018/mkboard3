@@ -6,7 +6,7 @@
 <mapper namespace="com.mksong.mkboard3.mappers.BoardMapper">
 
   <select id="getList" resultType="com.mksong.mkboard3.dto.BoardDTO">
-        select * from tbl_board order by bno desc
+        select * from tbl_board order by bno desc limit #{skip}, #{size}
   </select>
 
   <select id="getRead" resultType="com.mksong.mkboard3.dto.BoardDTO">
@@ -28,5 +28,9 @@
   <delete id="delete">
     delete from tbl_board where bno = #{bno}
   </delete>
+
+  <select id="listCount" resultType="long">
+        select count(*) from (select bno from tbl_board where bno > 0 limit #{countEnd}) board  
+  </select>
 
 </mapper>
