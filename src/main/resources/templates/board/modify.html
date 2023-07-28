@@ -1,6 +1,7 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<html xmlns:th="http://www.thymeleaf.org" 
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{layout/lteLayout.html}">
 
 <style>
   div .modify {
@@ -25,32 +26,56 @@
 
   
   
-  <div>
+  <div layout:fragment="content">
 
     <h1>Modify Page</h1>
 
     <form method="post" class="actionForm">
-      <div class="modify">
-        <input type="text" name="title" th:value="${dto.title}"/>
-      </div>
 
-      <div class="modify">
-        <input type="text" name="content" th:value="${dto.content}"/>
-      </div>
 
-      <div class="modify">
-        <input type="text" name="writer" th:value="${dto.writer}"/>
+      <div class="col-md-6">
+        <div class="card card-success">
+          <div class="card-body">
+            
+            <label>NO</label>
+              <div class="form-control form-control-lg modify">
+                [[${dto.bno}]]
+              </div>
+
+            <label>Title</label>
+              <div class="form-control form-control-lg modify">
+                <input type="text" name="title" th:value="${dto.title}"/>
+              </div>  
+
+            <label>Content</label>
+              <div class="form-control form-control-lg modify">
+                <input type="text" name="content" th:value="${dto.content}"/>
+              </div>
+
+            <label>Writer</label>
+              <div class="form-control form-control-lg modify">
+                [[${dto.writer}]]
+              </div>           
+  
+          </div>
+  
+        </div>
       </div>
 
     
-      <button class="btnModify">수정</button>
-      <button class="btnDelete">삭제</button>
+      <button class="btn btn-primary btn-secondary btnModify"
+                style="width: auto; ">Modify
+      </button>
+      <button class="btn btn-primary btn-danger btnDelete"
+                style="width: auto; ">Delete
+      </button>
     </form>
     <br>
 
     <form method="get" action="/board/list">
-      <button>리스트</button>
-      
+      <button class="btn btn-primary btnDelete"
+                style="width: auto; ">List
+      </button>      
     </form>
 
     </div>

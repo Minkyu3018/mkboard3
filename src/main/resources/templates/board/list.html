@@ -1,7 +1,10 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<html xmlns:th="http://www.thymeleaf.org" 
+xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+layout:decorate="~{layout/lteLayout.html}"
+>
 
-<style>
+<!-- <style>
 
   li {
     border: 1px solid black;
@@ -25,41 +28,46 @@
     border-radius: 10px;
 
   }
-</style>
+</style> -->
 
 <body>
 
-  <div>
+  <div layout:fragment="content">
 
-    <h1>List Page</h1>
+    <div class="card">
+      <div class="card-body">
 
-    <form method="get" action="/board/regist">
-      <button>Register</button>
-    </form>
-    <br>
+          <h1>List Page</h1>
 
 
-    <form>
-      <table class="boardTable">
-        <tr style="font-weight: bold;">
-          <td>Bno</td>
-          <td>Title</td>
-          <td>Writer</td>
-        </tr>
+        <form>
+          <table class="boardTable table table-bordered">
+            <tr style="font-weight: bold;">
+              <td>Bno</td>
+              <td>Title</td>
+              <td>Writer</td>
+            </tr>
 
-        <tr th:each="dto: ${pageResponseDTO.list}">
-          <td>[[${dto.bno}]]</td>
-          <td th:data-bno="${dto.bno}">[[${dto.title}]]</td>
-          <td>[[${dto.writer}]]</td>
-        </tr>
-      </table>
+            <tr th:each="dto: ${pageResponseDTO.list}">
+              <td>[[${dto.bno}]]</td>
+              <td th:data-bno="${dto.bno}">[[${dto.title}]]</td>
+              <td>[[${dto.writer}]]</td>
+            </tr>
+          </table>
 
-    </form>
+        </form>
 
-    <div>
-      <ul class="boardUL" style="display: flex; justify-content: space-between; width: 400px; list-style: none;">
-      </ul>
+          <button onclick="location.href='/board/regist'" type="submit" class="btn btn-primary btn-block"
+                style="width: auto; ">Regist
+          </button>
+
+      </div>
     </div>
+
+      <div class="card-footer clearfix">
+        <ul class="pagination pagination-sm m-0 float-right boardUL">                
+        </ul>
+      </div>
 
     <form class="actionForm" action="/board/list" method="get">
       <input type="hidden" name="page" value="3">
@@ -71,7 +79,7 @@
 
   </div>  
 
-  <script th:inline="javascript">
+  <script layout:fragment="script" th:inline="javascript">
 
     const boardTable = document.querySelector(".boardTable")
     const actionForm = document.querySelector(".actionForm")

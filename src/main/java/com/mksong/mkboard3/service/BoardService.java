@@ -18,4 +18,8 @@ public interface BoardService {
 
   int delete(Integer bno);
 
+  // 파일 업로드
+  Long setBoard(BoardDTO boardDTO, boolean makeThumbnail);
+  
+
 }

@@ -37,6 +37,26 @@ public class ReplyServiceImpl implements ReplyService {
 		return newRno;
   }
 
+  @Override
+  public ReplyDTO readOne(Long rno) {
+
+    return replyMapper.readOne(rno);
+  }
+
+  @Override
+  public void modify(ReplyDTO replyDTO) {
+    
+    replyMapper.modify(replyDTO);
+  }
+
+  @Override
+  public void delete(Long rno) {
+
+    replyMapper.delete(rno);
+  }
+
+  
+
   
   
 }

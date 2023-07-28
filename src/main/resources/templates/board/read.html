@@ -1,8 +1,10 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<html xmlns:th="http://www.thymeleaf.org" 
+xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+layout:decorate="~{layout/lteLayout.html}"
+>
 
-<style>
+<!-- <style>
 
   div .list {
     border: 2px solid black; 
@@ -19,60 +21,105 @@
     border-radius: 10px ;
     
   }  
-
-  
-</style>
+</style> -->
 
 <body>
-
    
-  <div>
+  <div class="container-fluid pt-4 px-4" layout:fragment="content">
 
     <h1>Read Page</h1>
 
-    <form method="get" action="/board/list">
-      <button>리스트</button>
-      
-    </form>
-    <br>
+    <div class="col-md-6">
+      <div class="card card-success">
+        <div class="card-body">
+          
+          <label>NO</label>
+            <div class="form-control form-control-lg">[[${dto.bno}]]</div>
+          <label>title</label>
+            <div class="form-control form-control-lg">[[${dto.title}]]</div>
+          <label>writer</label>
+            <div class="form-control form-control-lg">[[${dto.writer}]]</div>
+          <label>content</label>
+            <div class="form-control form-control-lg">[[${dto.content}]]</div>
+          <label>dueDate</label>
+            <div class="form-control form-control-lg">[[${dto.duedate}]]</div>
 
-    <div class="list">[[${dto.bno}]]</div>
-    <div class="list">[[${dto.title}]]</div>
-    <div class="list">[[${dto.content}]]</div>
-    <div class="list">[[${dto.writer}]]</div>
-    <div class="list">[[${dto.duedate}]]</div>
-    
-    <form class="actionForm">
-      <button class="btnModify">수정</button>
-      <button class="btnDelete">삭제</button>
-    </form>
+        </div>
 
-    <br>
-    <br>
-    댓글
-    <div>
-      <input type = "text" name = "reply" id="replyInput" value="AAAA">
-      <input type = "text" name = "replyer" id="replyInput" value="USER00">
-      <button type="button" class="btnReply">ADD</button>
+      </div>
     </div>
 
 
+    <form class="actionForm">
+      <button onclick="location.href='/board/list'" type="button" class="btn btn-primary"
+                style="width: auto; ">List
+      </button>
+      <button class="btn btn-primary btn-secondary btnModify"
+                style="width: auto; ">Modify
+      </button>
+      <button class="btn btn-primary btn-danger btnDelete"
+                style="width: auto; ">Delete
+      </button>
+    </form>
+    
 
-    <div>
-      <ul class = "replyUL" >
+    
+    <hr>
+      
+    <div class="col-sm-12 col-md-12 col-xl-12">
+      <div class="h-100 bg-light rounded p-4">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+          <h6 class="mb-0">Reply Register</h6>
+        </div>
+        <div class="mb-3 replyRegister">          
+          <input type="hidden" name="replyer" value="MK">
+          <input type="text" name="reply" class="form-control">
+        </div>
+        <div class="button_wrap">
+          <button class="btn btn-primary btnReply">Reply Register</button>
+        </div>
+      </div>
+    </div>
 
+
+    <div class="replyWrap">
+      [Reply]
+      <ul class = "replyUL" >        
+        
       </ul>
     </div>
+
+    <div class="modal replyModModal" tabindex="-1" role="dialog">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            Reply Modify
+          </div>
+          <div class="modal-body replyModify">
+            <input type="hidden" name="replyer" value="MK">
+            <input type="text" name="reply" class="form-control">
+            <div class="replyModifyVal"></div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-primary btnReplyModify">Reply Modify</button>
+            <button class="btn btn-danger btnReplyDelete">Reply Delete</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    
 
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
   </div>
   
-  <script th:inline = "javascript"> 
+  <script layout:fragment="script" th:inline="javascript"> 
 
 
 
-    // 수정,삭제
+    // 리스트 수정,삭제
     const btnModify = document.querySelector(".btnModify")
     const btnDelete = document.querySelector(".btnDelete")
     const actionForm = document.querySelector(".actionForm")
@@ -82,6 +129,14 @@
     const {bno} = [[${dto}]]
 
     const replyBtn = document.querySelector('.btnReply');
+    const replyModify = document.querySelector(".replyModify")
+    const replyModModal = new bootstrap.Modal(document.querySelector(".replyModModal"))
+    const replyWrap = document.querySelector(".replyWrap")
+    const btnReplyModify = document.querySelector(".btnReplyModify")
+    const replyModifyVal = replyModify.querySelector(".replyModifyVal")
+
+    // 댓글 삭제
+    const btnReplyDelete = document.querySelector(".btnReplyDelete")
 
 
     // 댓글목록을 가져오는 함수.
@@ -93,6 +148,14 @@
       return data
 
     }
+    const getReadOne = async(rno) => {
+      const res = await axios.get(`http://localhost:8080/replies/read/${rno}`)
+      return res.data
+
+      console.log("rno"+rno)
+    }
+
+
 
     let page = 1
 
@@ -111,12 +174,12 @@
 
         const {rno, reply, replyer} = list[i]
 
-        str += `<li data-rno=${rno}>${rno} - ${reply} - ${replyer}  </li>`
-      } // end for.
+        str += `<li data-rno=${rno}>${rno} - ${reply} - ${replyer} </li>`
+      } //end for.
 
       replyUL.innerHTML = str
 
-      console.log("str-----"+str)
+      //console.log("str-----"+str)
 
       
     }
@@ -129,13 +192,13 @@
     }
 
     replyBtn.addEventListener("click", e => {
-			const replyVal = document.querySelector("input[name=reply]").value
-			const replyerVal = document.querySelector("input[name=replyer]").value
+			const replyVal = document.querySelector("input[name=reply]").value // AAAA 담김
+			const replyerVal = document.querySelector("input[name=replyer]").value // USER00
 
-			const temp = {reply: replyVal, replyer: replyerVal}
+			const temp = {reply: replyVal, replyer: replyerVal} // temp로 묶음
 
-			postRemoteAdd(temp).then(result => {
-				console.log(result);
+			postRemoteAdd(temp).then(result => {       
+				console.log("result:....."+result);
         loadReply()
 			})
 
@@ -143,10 +206,75 @@
 
 		}, false)
 
+    //댓글 수정
+    const putReply = async(reply) => {
+      const res = await axios.put(`http://localhost:8080/replies/modify/${reply.rno}`, reply)
+      return res.data
+    }
+
+    //댓글수정 모달
+    replyWrap.addEventListener("click", (e) => {      
+      e.preventDefault()
+      e.stopPropagation()
+
+      //target 찾기
+      const target = e.target
+      const rno = target.getAttribute("data-rno")
+      //console.log(target.getAttribute("data-reply"))
+
+      getReadOne(rno).then(data => {
+        
+        replyModModal.show()
+        replyModify.querySelector("input[name=reply]").value = data.reply
+        replyModifyVal.innerHTML = `<input type="hidden" name="rno" value="${rno}">`
+      })
+
+    }, false)
+
+    // 댓글 수정
+    btnReplyModify.addEventListener("click", (e) => {
+      
+      e.preventDefault()
+      e.stopPropagation()
+      
+      const target = e.target
+      const rno = replyModify.querySelector("input[name=rno]").value
+      const reply = replyModify.querySelector("input[name=reply]").value
+
+      //객체로 만들기
+      const temp = {rno, reply}
+
+      putReply(temp).then(data => {
+        alert(data.result + "번 댓글이 수정 되었습니다.")
+        //getListDefault()
+        replyModModal.hide()
+        loadReply()
+      })
+    })
+
+    // 댓글 삭제
+    const deleteReply = async(rno) => {
+      const res = await axios.delete(`http://localhost:8080/replies/delete/${rno}`)
+      return res.data
+    }
+
+    // 댓글 삭제
+    btnReplyDelete.addEventListener("click", (e) => {
+      
+      e.preventDefault()
+      e.stopPropagation()
+      
+      const target = e.target
+      const rno = target.closest(".replyModModal").querySelector("input[name=rno]").value
+
+      deleteReply(rno).then(data => {
+        alert(`${rno}번 댓글이 삭제 되었습니다.`)
+        replyModModal.hide()
+        loadReply()
+      })
+    })
+  
     
-
-
-
 
     btnModify.addEventListener("click", (e) => {
       actionForm.setAttribute("action", `/board/modify/[[${ dto.bno }]]`)

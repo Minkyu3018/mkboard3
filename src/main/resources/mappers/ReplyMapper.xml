@@ -15,10 +15,37 @@
     <insert id="replyRegist">
       insert into tbl_reply3 (bno, reply, replyer)
       values (#{bno}, #{reply}, #{replyer})
+      
       <selectKey resultType="long" keyProperty="rno" order="AFTER">
         select last_insert_id()
       </selectKey>
-	</insert>
+	  </insert>
+
+    <update id="modifyReply">
+		  update tbl_reply3 set reply=#{reply} where bno=#{bno} and rno=#{rno}
+	  </update>
+
+    <select id="readOne">
+      select rno, bno, reply, replyer
+      from tbl_reply3
+      where rno = #{rno}
+    </select>
+
+    <update id="modify">
+      update tbl_reply3
+      set
+        reply = #{reply}
+      where rno = #{rno}
+    </update>
+
+    <delete id="delete">
+      delete from tbl_reply3 where rno = #{rno}
+    </delete>
+
+    <insert id="setTodoImage">
+      insert into tbl_board_image (image_tno, images, ord) 
+      values (#{image_tno}, #{image}, #{ord})
+    </insert>
 
 
 

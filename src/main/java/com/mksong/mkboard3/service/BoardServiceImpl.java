@@ -1,21 +1,49 @@
 package com.mksong.mkboard3.service;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.util.FileCopyUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.mksong.mkboard3.dto.BoardDTO;
+import com.mksong.mkboard3.dto.BoardImageDTO;
 import com.mksong.mkboard3.dto.PageRequestDTO;
 import com.mksong.mkboard3.dto.PageResponseDTO;
 import com.mksong.mkboard3.mappers.BoardMapper;
 
+import jakarta.servlet.ServletContext;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
+import net.coobird.thumbnailator.Thumbnailator;
 
 @Service
 @RequiredArgsConstructor
+@Log4j2
 public class BoardServiceImpl implements BoardService{
 
   private final BoardMapper boardMapper;
+
+  private final ServletContext servletContext;
+
+
+  @Value("{com.mksong.upload.path}")
+  private String path;
+
+  public static class UploadException extends RuntimeException {
+
+    public UploadException(String msg) {
+      super(msg);
+    }
+  }
+
 
   @Override
   public PageResponseDTO<BoardDTO> getList(PageRequestDTO pageRequestDTO) {
@@ -54,6 +82,72 @@ public class BoardServiceImpl implements BoardService{
   public int delete(Integer bno) {
     
     return boardMapper.delete(bno);
+  }
+
+
+  @Override
+  public Long setBoard(BoardDTO boardDTO, boolean makeThumbnail) {
+    
+    List<MultipartFile> files = boardDTO.getFiles();
+
+    // 파일 저장하고 이름만 추출
+    if(files == null || files.size() == 0) {
+      throw new UploadException("No file");
+    }
+
+    List<String> uploadFileNames = new ArrayList<>();
+
+    for (MultipartFile mFile : files) {
+
+      String originalFileName = mFile.getOriginalFilename();
+      String uuid = UUID.randomUUID().toString();
+
+      String mimeType = servletContext.getMimeType(originalFileName);
+      log.info("mimeType..." + mimeType);
+
+      //save할 파일이름
+      String saveFileName = uuid+"_"+originalFileName;
+      File saveFile = new File(path, saveFileName);
+
+      //예외처리
+      try ( InputStream in = mFile.getInputStream();
+            OutputStream out = new FileOutputStream(saveFile);
+      ) {
+
+        // 파일 Copy
+        FileCopyUtils.copy(in, out);
+
+        // 이미지 파일일 경우
+        if(makeThumbnail && mimeType.contains("image")) {
+          // 섬네일 생성
+          File thumOutFile = new File(path, "s_" + saveFileName);
+          Thumbnailator.createThumbnail(saveFile, thumOutFile, 200, 200);
+        }
+
+        uploadFileNames.add(saveFileName);
+
+      } catch(Exception e) {
+          throw new UploadException("Upload Fail" + e.getMessage());
+      }
+
+    }
+    //이름을 DB에 저장
+    log.info("파일 이름 확인됨");
+    BoardImageDTO boardImageDTO = new BoardImageDTO();
+    Long bno = boardMapper.setBoard(boardDTO);
+    boardImageDTO.setImage_tno(boardDTO.getBno());
+
+    int ord = 0;
+    for(String uploadFileName : uploadFileNames) {
+      boardImageDTO.setImage(uploadFileName);
+      boardImageDTO.setOrd(ord++);
+      boardMapper.setBoardImage(boardImageDTO);
+    }
+
+
+
+    return bno;
+
   }
 
 
