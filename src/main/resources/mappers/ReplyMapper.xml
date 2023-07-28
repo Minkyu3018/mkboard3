@@ -42,11 +42,5 @@
       delete from tbl_reply3 where rno = #{rno}
     </delete>
 
-    <insert id="setTodoImage">
-      insert into tbl_board_image (image_tno, images, ord) 
-      values (#{image_tno}, #{image}, #{ord})
-    </insert>
-
-
-
+    
 </mapper>

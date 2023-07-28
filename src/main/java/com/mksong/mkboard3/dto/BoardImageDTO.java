@@ -13,10 +13,19 @@ import lombok.NoArgsConstructor;
 @ToString
 public class BoardImageDTO {
 
-  private Integer image_tno;
+  private String uuid;
+  private String fileName;
+  private boolean img;
 
-  private String image;
+  public String getLink(){
 
-  private int ord;
+    if(img) {
+      return "s_" + uuid + "_" + fileName;
+    }else {
+      return "default.jpg";
+    }
+
+  }
+
   
 }

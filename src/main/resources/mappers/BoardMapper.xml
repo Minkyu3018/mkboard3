@@ -33,4 +33,9 @@
         select count(*) from (select bno from tbl_board where bno > 0 limit #{countEnd}) board  
   </select>
 
+  <insert id="setTodoImage">
+      insert into tbl_board_image (image_tno, images, ord) 
+      values (#{image_tno}, #{image}, #{ord})
+  </insert>
+
 </mapper>

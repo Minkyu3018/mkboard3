@@ -24,25 +24,10 @@ public class BoardDTO {
   private String writer;
   private String duedate;
 
-  // 대표이미지 하나 가져오기
-  private String images;
+  // 파일 리스트 
 
-  // 썸네일 작업
-  private String picture;
-
-  // 등록, 수정, 업로드된 파일 데이터를 수집
-  @Builder.Default
-  private List<MultipartFile> files = new ArrayList<>(); // 업로드 파일
-
-  public String getPicture() {
-    if(images != null) {
-      picture = images.split("\\.")[0] + "." + "png";
-
-        return picture;
-    }
-
-    return "";
-  }
+  private List<String> fileNames;
+  
 
 
 }

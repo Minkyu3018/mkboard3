@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.mksong.mkboard3.mappers.FileMapper">
+
+  <insert id="registerImage">
+    insert into tbl_board_image (uuid, bno, fileName, ord) values
+    
+    <foreach collection="list" item="item" separator=",">
+    (#{item.uuid}, #{item.bno}, #{item.fileName}, #{item.ord})
+    </foreach>
+
+  </insert>
+
+
+
+</mapper>
