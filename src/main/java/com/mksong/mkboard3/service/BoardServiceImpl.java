@@ -120,6 +120,13 @@ public class BoardServiceImpl implements BoardService{
   }
 
 
+  @Override
+  public List<String> getImage(Integer bno) {
+
+    return fileMapper.selectImages(bno);
+  }
+
+
   // @Override
   // public Long setBoard(BoardDTO boardDTO, boolean makeThumbnail) {
     

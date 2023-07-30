@@ -14,6 +14,17 @@
 
   </insert>
 
+  <!-- <select id="getList" resultType="BoardDTO">
+    select 
+        b.bno, b.title, b.content, b.writer, 
+        concat(bi.uuid,'_',bi.fileName) fileName
+    from tbl_board b 
+    left outer join tbl_board_image bi on bi.bno = b.bno
+    where bi.ord = 0 or bi.ord is null
+    order by b.bno desc 
+    limit #{skip}, #{size}
+  </select> -->
+
 
 
 </mapper>
