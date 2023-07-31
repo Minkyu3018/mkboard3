@@ -5,11 +5,11 @@
 
 <mapper namespace="com.mksong.mkboard3.mappers.FileMapper">
 
-  <insert id="registerImage">
-    insert into tbl_board_image (uuid, bno, fileName, ord) values
+  <insert id="registerImage" >
+    insert into tbl_board_image (uuid, fileName, bno, ord) values
     
     <foreach collection="list" item="item" separator=",">
-    (#{item.uuid}, #{item.bno}, #{item.fileName}, #{item.ord})
+    (#{item.uuid}, #{item.fileName}, #{item.bno}, #{item.ord})
     </foreach>
 
   </insert>

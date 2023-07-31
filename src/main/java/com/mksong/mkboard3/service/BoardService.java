@@ -14,14 +14,14 @@ public interface BoardService {
 
   void regist(BoardDTO boardDTO);
 
-  int modify(BoardDTO boardDTO);
+  void modify(BoardDTO boardDTO);
 
-  int delete(Integer bno);
+  void delete(Integer bno);
 
   // 파일 업로드
   // Long setBoard(BoardDTO boardDTO, boolean makeThumbnail);
 
-  List<String> getImage(Integer bno);
+  // List<String> getImage(Integer bno);
   
 
 }

@@ -11,14 +11,14 @@ public interface FileMapper {
 
   // file register
 
-  int registerImage(List<Map<String, String>> imageList);
+  // int registerImage(List<Map<String, String>> imageList);
 
-  int deleteImage(Integer bno);
+  // int deleteImage(Integer bno);
 
-  @Select("select * from tbl_board b where b.bno = #{bno}")
-    BoardDTO getRead(Integer bno);
+  // @Select("select * from tbl_board b where b.bno = #{bno}")
+  // BoardDTO getRead(Integer bno);
 
-    @Select("select concat(uuid, '_' , fileName) fileName from tbl_board_image where bno = #{bno} order by ord")
-    List<String> selectImages(Integer bno);
+  // @Select("select concat(uuid, '_' , fileName) fileName from tbl_board_image where bno = #{bno} order by ord")
+  // List<String> selectImages(Integer bno);
   
 }

@@ -30,8 +30,13 @@
 
     <h1>Modify Page</h1>
 
+    <form method="get" action="/board/list">
+      <button class="btn btn-primary btnDelete"
+                style="width: 80px; margin-bottom: 10px; ">List
+      </button>
+    </form>
+    
     <form method="post" class="actionForm">
-
 
       <div class="col-md-6">
         <div class="card card-success">
@@ -61,6 +66,8 @@
   
         </div>
       </div>
+      
+      <div class="uploadHidden"></div>
 
     
       <button class="btn btn-primary btn-secondary btnModify"
@@ -72,20 +79,137 @@
     </form>
     <br>
 
-    <form method="get" action="/board/list">
-      <button class="btn btn-primary btnDelete"
-                style="width: auto; ">List
-      </button>      
-    </form>
+
+    <hr>
+
+      <div class="uploadWrap mb-3">
+        <ul class="uploadUL">
+          <li th:each="list: ${dto.fileNames}"  th:data-originName="${list}">
+            <a th:href="@{|http://localhost/${list}|}" target="_blank" style="height: 100px;">
+              <img th:src="|http://localhost/${list}|" height="100"/>
+              [[${list}]]
+            </a>
+            <button class="btn btn-danger" th:onclick="removeFile(event, [[${list}]])">X</button>
+          </li>
+        </ul>
+      </div>
+      
+    <input class="uploadInput" type="file" name="upload" multiple>
+    <button class="uploadBtn">UPLOAD</button>        
+
+      <!--/* <div class="uploadDiv">
+        <ul class="uploadUL">
+                
+        </ul>
+      </div> */-->
+    
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
     </div>
 
     <script layout:fragment="script" th:inline="javascript">
+
       const btnModify = document.querySelector(".btnModify")
       const btnDelete = document.querySelector(".btnDelete")
       const actionForm = document.querySelector(".actionForm")
 
+      const uploadBtn = document.querySelector(".uploadBtn")
+      const uploadInput = document.querySelector(".uploadInput")
+      const uploadUL = document.querySelector(".uploadUL")
+
+      const uploadHidden = document.querySelector(".uploadHidden")
+
+
+      uploadBtn.addEventListener("click", e => {
+        e.preventDefault()
+        e.stopPropagation()
+
+        console.dir(uploadInput.files)
+
+        if(!uploadInput.files || uploadInput.files.length === 0 ){
+            return
+        }
+
+        const formData = new FormData()
+
+        for(let i = 0; i < uploadInput.files.length; i++){
+            formData.append("files", uploadInput.files[i])
+        }
+
+        console.dir(formData)
+
+        const header = {headers: {"Content-Type": "multipart/form-data"}}
+
+        axios.post('http://localhost:8080/upload', formData, header)
+        .then(res => {
+          const result = res.data
+          console.log(result)
+          showProducts(result)
+          
+        })
+
+      },false)
+
+      const showProducts = (arr) => {
+
+        let str =""
+            
+        for(const uploadFile of arr){
+          const {fileName,link,uuid} = uploadFile // 구조 분해 할당
+
+          str += `
+          <li data-originname='${uuid}_${fileName}'>
+            <div>
+                <a href='http://localhost/${uuid}_${fileName}' target="_blank">
+                  <img src = 'http://localhost/${link}'/>
+                </a>
+                  <p>${fileName} <button onclick="javascript:removeFile(event,'${uuid}','${fileName}')">X</button></p>
+            </div>        
+          </li>
+          `
+        }
+
+        uploadUL.innerHTML += str
+
+      }
+
+      const removeFile = (e, uuid, fileName) => {
+
+        e.stopPropagation()
+        e.preventDefault()
+
+        alert("remove file")
+
+        // event 걸려있는 li 태그를 찾는다
+        const liObj = e.target.closest("li")
+
+        console.log("liObj"+liObj)
+
+        axios.delete(`http://localhost:8080/removeFile/${uuid}_${fileName}`)
+
+        // 목록 삭제
+        liObj.remove()
+
+      }
+
+
       btnModify.addEventListener("click", (e) => {
+        e.preventDefault()
+        e.stopPropagation()
+
+        const liArr = uploadUL.querySelectorAll("li")
+
+        //li개수만큼 for문 돌려서 input hidden 추가
+        let str = ""
+        for(let liObj of liArr) {
+          console.log("liObj=========================="+liObj)
+          const originName = liObj.getAttribute("data-originname")
+          console.log(originName)
+          //console.log("---------------------------------")
+          str += `<input type="hidden" name="fileNames" value="${originName}">`
+        }
+
+        uploadHidden.innerHTML += str
 
         actionForm.setAttribute("action", `/board/modify/[[${dto.bno}]]`)
         actionForm.submit()

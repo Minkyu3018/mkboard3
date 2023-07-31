@@ -64,7 +64,7 @@ public class FileUploadController {
       // 실제 파일 저장
       File saveFile = new File(uploadPath, saveFileName);
 
-      log.info("saveFileName"+saveFileName);
+      log.info("saveFileName:" + saveFileName);
 
       // 파일 복사시 예외처리
       try {

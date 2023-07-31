@@ -38,28 +38,17 @@ public class BoardServiceImpl implements BoardService{
   private final FileMapper fileMapper;
 
 
-  // @Value("{com.mksong.upload.path}")
-  // private String path;
-
-  // public static class UploadException extends RuntimeException {
-
-  //   public UploadException(String msg) {
-  //     super(msg);
-  //   }
-  // }
-
-
   @Override
   public PageResponseDTO<BoardDTO> getList(PageRequestDTO pageRequestDTO) {
 
     List<BoardDTO> list = boardMapper.getList(pageRequestDTO);
         long total = boardMapper.listCount(pageRequestDTO);
-
-
+        
+        
         return PageResponseDTO.<BoardDTO>withAll()
-                .list(list)
-                .total(total)
-                .build();
+          .list(list)
+          .total(total)                
+          .build();
 
   }
 
@@ -78,121 +67,98 @@ public class BoardServiceImpl implements BoardService{
     // 파일이름 list로 가져오기
     List<String> fileNames = boardDTO.getFileNames();
 
+
     // 게시판에서 등록 성공, 파일이 등록 되었으면 실행
-    if(count > 0 && boardDTO.getFileNames() != null && boardDTO.getFileNames().isEmpty()) {
+    if(count > 0 && boardDTO.getFileNames() != null && boardDTO.getFileNames().isEmpty() == false) {
     
-    //bno 가져오기
-    Integer bno = boardDTO.getBno();
-    log.info("bno:....." + bno);
+      //log.info("service ===============");
+      //bno 가져오기
+      Integer bno = boardDTO.getBno();
+      //log.info("bno:....." + bno);
 
-    AtomicInteger index = new AtomicInteger();
+      AtomicInteger index = new AtomicInteger();
 
-    // 등록된 파일 fileNames에서 추출
-    List<Map<String, String>> list = fileNames.stream().map(str -> {
-      // uuid 가져오기
-      String uuid = str.substring(0, 36);
-      // 실제 파일명 가져오기
-      String fileName = str.substring(37);
+      // 등록된 파일 fileNames에서 추출
+      List<Map<String, String>> list = fileNames.stream().map(str -> {
+        // uuid 가져오기
+        String uuid = str.substring(0, 36);
+        // 실제 파일명 가져오기
+        String fileName = str.substring(37);
 
-      // return map에 담기
-      return Map.of("uuid", uuid, "file_name", fileName, "bno", "" + bno, "ord",
-                     ""+ index.getAndIncrement());}).collect(Collectors.toList());
+        // return map에 담기
+        return Map.of("uuid", uuid, "fileName", fileName, "bno", "" + bno, "ord", ""
+                      + index.getAndIncrement());}).collect(Collectors.toList());
 
-      log.info(list);
+        //log.info(list);
 
-      // 파일 등록 실행
-      fileMapper.registerImage(list);
-    
-   }
+        // 파일 등록 실행
+        boardMapper.registerImage(list);
+      
+    }
 
   }
 
   @Override
-  public int modify(BoardDTO boardDTO) {
+  public void modify(BoardDTO boardDTO) {
     
-    return boardMapper.modify(boardDTO);
+    //수정 업데이트
+    int count = boardMapper.modify(boardDTO);
+    //log.info("modify product count: " + count);
+
+    //log.info("getBno: "+boardDTO.getBno());
+
+    //기존파일 삭제
+    boardMapper.deleteImage(boardDTO.getBno());
+
+    
+
+    //파일이름 List로 가져오기
+    List<String> fileNames = boardDTO.getFileNames();
+    //log.info("fileNames:" + fileNames);
+
+    //게시판 등록 성공과 파일이 등록되었다면 실행
+    if (count > 0) {
+      //bno 가져오기
+      Integer bno = boardDTO.getBno();
+      //log.info("--------------------------------- bno: " + bno);
+
+      AtomicInteger index = new AtomicInteger();
+
+      //등록된 파일 fileNames에서 추출
+      List<Map<String, String>> list = fileNames.stream().map(str -> {
+
+        log.info("str:"+str);
+        //uuid 가져오기
+        String uuid = str.substring(0, 36);
+        //실제 파일명 가져오기
+        String fileName = str.substring(37);
+
+        //return map에 담기
+        return Map.of("uuid", uuid, "fileName", fileName, "bno", "" + bno, "ord", "" + index.getAndIncrement());
+      }).collect(Collectors.toList());
+
+      //log.info("=====================================================================");
+      //log.info("modify list");
+      //log.info(list);
+
+      //파일 등록 실행
+      boardMapper.registerImage(list);
+    }
   }
 
   @Override
-  public int delete(Integer bno) {
+  public void delete(Integer bno) {
     
-    return boardMapper.delete(bno);
-  }
+    boardMapper.delete(bno);
 
-
-  @Override
-  public List<String> getImage(Integer bno) {
-
-    return fileMapper.selectImages(bno);
+    boardMapper.deleteImage(bno);
   }
 
 
   // @Override
-  // public Long setBoard(BoardDTO boardDTO, boolean makeThumbnail) {
-    
-  //   List<MultipartFile> files = boardDTO.getFiles();
+  // public List<String> getImage(Integer bno) {
 
-  //   // 파일 저장하고 이름만 추출
-  //   if(files == null || files.size() == 0) {
-  //     throw new UploadException("No file");
-  //   }
-
-  //   List<String> uploadFileNames = new ArrayList<>();
-
-  //   for (MultipartFile mFile : files) {
-
-  //     String originalFileName = mFile.getOriginalFilename();
-  //     String uuid = UUID.randomUUID().toString();
-
-  //     String mimeType = servletContext.getMimeType(originalFileName);
-  //     log.info("mimeType..." + mimeType);
-
-  //     //save할 파일이름
-  //     String saveFileName = uuid+"_"+originalFileName;
-  //     File saveFile = new File(path, saveFileName);
-
-  //     //예외처리
-  //     try ( InputStream in = mFile.getInputStream();
-  //           OutputStream out = new FileOutputStream(saveFile);
-  //     ) {
-
-  //       // 파일 Copy
-  //       FileCopyUtils.copy(in, out);
-
-  //       // 이미지 파일일 경우
-  //       if(makeThumbnail && mimeType.contains("image")) {
-  //         // 섬네일 생성
-  //         File thumOutFile = new File(path, "s_" + saveFileName);
-  //         Thumbnailator.createThumbnail(saveFile, thumOutFile, 200, 200);
-  //       }
-
-  //       uploadFileNames.add(saveFileName);
-
-  //     } catch(Exception e) {
-  //         throw new UploadException("Upload Fail" + e.getMessage());
-  //     }
-
-  //   }
-  //   //이름을 DB에 저장
-  //   log.info("파일 이름 확인됨");
-  //   BoardImageDTO boardImageDTO = new BoardImageDTO();
-  //   Long bno = boardMapper.setBoard(boardDTO);
-  //   boardImageDTO.setImage_tno(boardDTO.getBno());
-
-  //   int ord = 0;
-  //   for(String uploadFileName : uploadFileNames) {
-  //     boardImageDTO.setImage(uploadFileName);
-  //     boardImageDTO.setOrd(ord++);
-  //     boardMapper.setBoardImage(boardImageDTO);
-  //   }
-
-
-
-  //   return bno;
-
-  // }
-
-
-
+  //   return boardMapper.selectImages(bno);
+  // }  
 
 }

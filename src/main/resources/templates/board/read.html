@@ -46,6 +46,20 @@ layout:decorate="~{layout/lteLayout.html}"
 
         </div>
 
+        <hr>        
+
+        <div class="uploadWrap mb-3">
+          <ul class="uploadUL">
+            <h5 class="mb-0">File</h5>
+            <li th:each="list: ${dto.fileNames}">
+              <a th:href="@{|http://localhost/${list}|}" target="_blank" style="height: 100px;">
+                <img th:src="|http://localhost/${list}|" height="100"/>
+                [[${list}]]
+              </a>
+            </li>
+          </ul>
+        </div>
+
       </div>
     </div>
 
@@ -83,7 +97,7 @@ layout:decorate="~{layout/lteLayout.html}"
 
 
     <div class="replyWrap">
-      [Reply]
+      <h5>Reply</h5>
       <ul class = "replyUL" >        
         
       </ul>

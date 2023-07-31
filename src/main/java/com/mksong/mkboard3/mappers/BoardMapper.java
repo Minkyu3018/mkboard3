@@ -1,6 +1,7 @@
 package com.mksong.mkboard3.mappers;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,11 +24,11 @@ public interface BoardMapper {
 
   long listCount(PageRequestDTO pageRequestDTO);
 
-
-  //파일업로드
-  Long setBoard(BoardDTO boardDTO);
   
-  void setBoardImage(BoardImageDTO boardImageDTO);
+
+  int registerImage(List<Map<String, String>> imageList);
+
+  int deleteImage(Integer bno);
   
 
 

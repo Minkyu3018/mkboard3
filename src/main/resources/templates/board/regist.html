@@ -83,8 +83,6 @@ layout:decorate="~{layout/lteLayout.html}"
 
   </div>
 
-  
-
   <script layout:fragment="script" th:inline="javascript">
 
     const uploadBtn = document.querySelector(".uploadBtn")
@@ -95,106 +93,108 @@ layout:decorate="~{layout/lteLayout.html}"
     const actionForm = document.querySelector(".actionForm")
     
     saveBtn.addEventListener("click", e => {
-            e.preventDefault()
-            e.stopPropagation()
+      e.preventDefault()
+      e.stopPropagation()
 
-            const liArr = uploadUL.querySelectorAll("li")
+    const liArr = uploadUL.querySelectorAll("li")
 
-            if(!liArr || liArr.length === 0){
-                alert("파일넣어라!!")
-                return
-            }
-
-
-            // hidden tag 생성을 위해 
-            let str = ""
-            for(let liObj of liArr){
-                console.log(liObj)
-                const uuid = liObj.getAttribute("data-uuid")
-                const fileName = liObj.getAttribute("data-filename")
-
-                console.log(uuid, fileName)
-                console.log("--------------------------")
-
-                str += `<input type='hidden' name='fileNames' value='${uuid}_${fileName}'>`
-            }
-
-            actionForm.innerHTML += str
-
-            actionForm.submit()
+      if(!liArr || liArr.length === 0){
+        alert("파일넣어라!!")
+        return
+      }
 
 
+      // hidden tag 생성을 위해 
+      let str = ""
+      for(let liObj of liArr){
+        console.log(liObj)
+        const uuid = liObj.getAttribute("data-uuid")
+        const fileName = liObj.getAttribute("data-filename")
 
-        },false)
+          console.log(uuid, fileName)
+          console.log("--------------------------")
 
-        uploadBtn.addEventListener("click", e => {
-            e.preventDefault()
-            e.stopPropagation()
+          str += `<input type='hidden' name='fileNames' value='${uuid}_${fileName}'>`
+      }
 
-            console.dir(uploadInput.files)
+        actionForm.innerHTML += str
 
-            if(!uploadInput.files || uploadInput.files.length === 0 ){
-                return
-            }
+        actionForm.submit()
 
-            const formData = new FormData()
 
-            for(let i = 0; i < uploadInput.files.length; i++){
-                formData.append("files", uploadInput.files[i])
-            }
 
-            console.dir(formData)
+      },false)
 
-            const header = {headers: {"Content-Type": "multipart/form-data"}}
+      uploadBtn.addEventListener("click", e => {
+        e.preventDefault()
+        e.stopPropagation()
 
-            axios.post('http://localhost:8080/upload', formData, header)
-            .then(res => {
-                const result = res.data
-                console.log(result)
-                showProducts(result)
-            })
+        console.dir(uploadInput.files)
 
-        },false)
+        if(!uploadInput.files || uploadInput.files.length === 0 ){
+            return
+        }
 
-        const showProducts = (arr) => {
+        const formData = new FormData()
 
-            let str =""
+        for(let i = 0; i < uploadInput.files.length; i++){
+            formData.append("files", uploadInput.files[i])
+        }
+
+        console.dir(formData)
+
+        const header = {headers: {"Content-Type": "multipart/form-data"}}
+
+        axios.post('http://localhost:8080/upload', formData, header)
+        .then(res => {
+          const result = res.data
+          console.log(result)
+          showProducts(result)
+        })
+
+      },false)
+
+      const showProducts = (arr) => {
+
+        let str =""
             
-            for(const uploadFile of arr){
-                const {fileName,link,uuid} = uploadFile // 구조 분해 할당
+        for(const uploadFile of arr){
+          const {fileName,link,uuid} = uploadFile // 구조 분해 할당
 
-                str += `
-                <li data-uuid='${uuid}' data-fileName='${fileName}'>
-                    <div>
-                        <a href='http://localhost/${uuid}_${fileName}' target="_blank">
-                            <img src = 'http://localhost/${link}'/>
-                        </a>
-                        <p>${fileName} <button onclick="javascript:removeFile(event,'${uuid}','${fileName}')">X</button></p>
-                    </div>        
-                </li>
-                `
-            }
-            uploadUL.innerHTML += str
+          str += `
+          <li data-uuid='${uuid}' data-fileName='${fileName}'>
+            <div>
+                <a href='http://localhost/${uuid}_${fileName}' target="_blank">
+                  <img src = 'http://localhost/${link}'/>
+                </a>
+                  <p>${fileName} <button onclick="javascript:removeFile(event,'${uuid}','${fileName}')">X</button></p>
+            </div>        
+          </li>
+          `
         }
 
-        const removeFile = (e, uuid, fileName) => {
+        uploadUL.innerHTML += str
 
-            e.stopPropagation()
-            e.preventDefault()
+      }
 
-            alert("remove file")
+      const removeFile = (e, uuid, fileName) => {
 
-            // event 걸려있는 li 태그를 찾는다
-            const liObj = e.target.closest("li")
+        e.stopPropagation()
+        e.preventDefault()
 
-            console.log(liObj)
+        
 
-            axios.delete(`http://localhost:8080/removeFile/${uuid}_${fileName}`)
+        // event 걸려있는 li 태그를 찾는다
+        const liObj = e.target.closest("li")
 
-            // 목록 삭제
-            liObj.remove()
+        console.log(liObj)
 
-        }
+        axios.delete(`http://localhost:8080/removeFile/${uuid}_${fileName}`)
+
+        // 목록 삭제
+        liObj.remove()
+
+      }
 
 
 

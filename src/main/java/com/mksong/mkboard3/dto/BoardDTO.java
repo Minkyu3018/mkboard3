@@ -24,9 +24,13 @@ public class BoardDTO {
   private String writer;
   private String duedate;
 
+  private String fileName;
+
   // 파일 리스트 
 
   private List<String> fileNames;
+
+  
   
 
 

@@ -31,12 +31,17 @@ public class BoardController {
 
     model.addAttribute("pageResponseDTO", pageResponseDTO);
 
+    //log.info("getList: "+pageResponseDTO.getList());
+    
+
   }
 
   @GetMapping("/read/{bno}")
   public String getRead(@PathVariable("bno") Integer bno, Model model) {
 
-    model.addAttribute("dto", boardService.getRead(bno));    
+    model.addAttribute("dto", boardService.getRead(bno));
+
+    //log.info("get read: ..."+boardService.getRead(bno));
 
     return "/board/read";
 
@@ -45,7 +50,7 @@ public class BoardController {
   @GetMapping("/regist")
   public void getRegist(BoardDTO boardDTO){
 
-    log.info("Get Regist.....");
+    //log.info("Get Regist.....");
 
   }
 
@@ -54,8 +59,8 @@ public class BoardController {
 
     boardService.regist(boardDTO);
 
-    log.info("Post Regist......");
-    log.info(boardDTO);
+    //log.info("Post Regist......");
+    //log.info("Controller postRegist: " + boardDTO);
 
     return "redirect:/board/list";
 
