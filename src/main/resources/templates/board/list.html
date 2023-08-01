@@ -1,34 +1,8 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" 
-xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-layout:decorate="~{layout/lteLayout.html}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/lteLayout.html}"
 >
-
-<!-- <style>
-
-  li {
-    border: 1px solid black;
-    padding: 5px;
-    
-    
-  }
-
-  tr,
-  td {
-    border: solid 2px black;
-    width: 150px;
-    padding: 6px;
-  }
-
-  button {
-    background-color: rgba(73, 107, 219, 0.708);
-    width: 80px;
-    height: 30px;
-    font-size: 18px;
-    border-radius: 10px;
-
-  }
-</style> -->
 
 <body>
 
@@ -39,6 +13,33 @@ layout:decorate="~{layout/lteLayout.html}"
 
           <h1>List Page</h1>        
           <!-- [[${pageResponseDTO.list}]] -->
+          <hr>
+
+          <!--/* //검색 */-->
+          <div class="mb-3 searchWrap">
+            <form class="actionForm" action="/board/list" method="get">
+              <input type="hidden" name="page" th:value="${pageRequestDTO.page}">
+              <input type="hidden" name="size" th:value="${pageRequestDTO.size}">
+              
+              <select name="type" class="form-select mb-3">
+                <option value="">선택해주세요</option>
+                <option value="t" th:selected="${pageRequestDTO.type == 't'}">제목</option>
+                <option value="c" th:selected="${pageRequestDTO.type == 'c'}">내용</option>
+                <option value="w" th:selected="${pageRequestDTO.type == 'w'}">작성자</option>
+                <option value="tc" th:selected="${pageRequestDTO.type == 'tc'}">제목+내용</option>
+                <option value="tcw" th:selected="${pageRequestDTO.type == 'tcw'}">제목+내용+작성자</option>
+              </select>
+              
+              <input type="text" name="keyword" class="form-control mb-3" placeholder="검색어를 입력 해주세요." style="width: 500px;" th:value="${pageRequestDTO.keyword}">
+              
+              <div class="button_wrap">
+                <button type="submit" class="btn btn-primary btnSearch">검색</button>
+              </div>
+            
+            </form>
+          </div>
+          <!--/* //검색 */-->
+          
 
         <form>
           <table class="boardTable table table-bordered">
@@ -78,10 +79,7 @@ layout:decorate="~{layout/lteLayout.html}"
         </ul>
       </div>
 
-    <form class="actionForm" action="/board/list" method="get">
-      <input type="hidden" name="page" value="3">
-      <input type="hidden" name="size" value="10">
-    </form>
+
 
   
     <script src="/js/pageUtil.js"></script>
@@ -90,11 +88,14 @@ layout:decorate="~{layout/lteLayout.html}"
 
   <script layout:fragment="script" th:inline="javascript">
 
-    const boardTable = document.querySelector(".boardTable")
     const actionForm = document.querySelector(".actionForm")
+    const boardTable = document.querySelector(".boardTable")    
     const pageObj = actionForm.querySelector("input[name='page']")
     const boardUL = document.querySelector(".boardUL")
-
+    
+    const typeObj = actionForm.querySelector("select[name=type]")
+    const keywordObj = actionForm.querySelector("input[name=keyword]")
+    const btnSearch = document.querySelector(".btnSearch")
 
     boardUL.addEventListener("click", (e) => {
       e.preventDefault()
@@ -149,6 +150,29 @@ layout:decorate="~{layout/lteLayout.html}"
 
       actionForm.setAttribute("action", `/board/read/${bno}`)
       actionForm.setAttribute("method", `get`)
+      actionForm.submit()
+
+    }, false)
+
+
+    //검색
+    btnSearch.addEventListener("click", e => {
+      
+      e.preventDefault()
+      e.stopPropagation()
+
+      console.log("==============")
+
+
+      //검색타입, 키워드 입력 안되었을 시 return
+      if(typeObj.options[typeObj.selectedIndex].value === "" && keywordObj.value !== ""){
+        alert("검색 조건을 선택해주세요")        
+        return
+      }
+
+      //검색 하고나면 page 1페이지 set
+      pageObj.value = 1      
+
       actionForm.submit()
 
     }, false)

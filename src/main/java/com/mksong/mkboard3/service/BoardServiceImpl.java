@@ -42,13 +42,14 @@ public class BoardServiceImpl implements BoardService{
   public PageResponseDTO<BoardDTO> getList(PageRequestDTO pageRequestDTO) {
 
     List<BoardDTO> list = boardMapper.getList(pageRequestDTO);
-        long total = boardMapper.listCount(pageRequestDTO);
+    
+    long total = boardMapper.listCount(pageRequestDTO);
         
         
-        return PageResponseDTO.<BoardDTO>withAll()
-          .list(list)
-          .total(total)                
-          .build();
+      return PageResponseDTO.<BoardDTO>withAll()
+        .list(list)
+        .total(total)                
+        .build();
 
   }
 
@@ -61,6 +62,7 @@ public class BoardServiceImpl implements BoardService{
 
   @Override
   public void regist(BoardDTO boardDTO) {
+    log.info("board regist service----------" + boardDTO);
 
     int count = boardMapper.regist(boardDTO);
     
@@ -89,10 +91,11 @@ public class BoardServiceImpl implements BoardService{
         return Map.of("uuid", uuid, "fileName", fileName, "bno", "" + bno, "ord", ""
                       + index.getAndIncrement());}).collect(Collectors.toList());
 
-        //log.info(list);
+        //log.info("list:"+list);
 
         // 파일 등록 실행
-        boardMapper.registerImage(list);
+        
+        boardMapper.registerImage(list);        
       
     }
 
@@ -144,6 +147,8 @@ public class BoardServiceImpl implements BoardService{
       //파일 등록 실행
       boardMapper.registerImage(list);
     }
+
+    // boardMapper.modify(boardDTO);
   }
 
   @Override

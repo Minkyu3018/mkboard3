@@ -60,7 +60,7 @@ public class BoardController {
     boardService.regist(boardDTO);
 
     //log.info("Post Regist......");
-    //log.info("Controller postRegist: " + boardDTO);
+    log.info("Controller postRegist: " + boardDTO);
 
     return "redirect:/board/list";
 

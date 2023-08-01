@@ -98,7 +98,7 @@ layout:decorate="~{layout/lteLayout.html}"
 
     <div class="replyWrap">
       <h5>Reply</h5>
-      <ul class = "replyUL" >        
+      <ul class = "replyUL " >        
         
       </ul>
     </div>
@@ -109,7 +109,7 @@ layout:decorate="~{layout/lteLayout.html}"
           <div class="modal-header">
             Reply Modify
           </div>
-          <div class="modal-body replyModify">
+          <div class="modal-body replyModify">                        
             <input type="hidden" name="replyer" value="MK">
             <input type="text" name="reply" class="form-control">
             <div class="replyModifyVal"></div>
@@ -117,7 +117,7 @@ layout:decorate="~{layout/lteLayout.html}"
           <div class="modal-footer">
             <button class="btn btn-primary btnReplyModify">Reply Modify</button>
             <button class="btn btn-danger btnReplyDelete">Reply Delete</button>
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
           </div>
         </div>
       </div>
@@ -134,9 +134,9 @@ layout:decorate="~{layout/lteLayout.html}"
 
 
     // 리스트 수정,삭제
-    const btnModify = document.querySelector(".btnModify")
-    const btnDelete = document.querySelector(".btnDelete")
     const actionForm = document.querySelector(".actionForm")
+    const btnModify = document.querySelector(".btnModify")
+    const btnDelete = document.querySelector(".btnDelete")    
 
     // 댓글
     const replyUL = document.querySelector(".replyUL")
@@ -188,7 +188,7 @@ layout:decorate="~{layout/lteLayout.html}"
 
         const {rno, reply, replyer} = list[i]
 
-        str += `<li data-rno=${rno}>${rno} - ${reply} - ${replyer} </li>`
+        str += `<li data-rno=${rno}>No.${rno} | ${reply} | 【작성자 : ${replyer}】 </li>`
       } //end for.
 
       replyUL.innerHTML = str
@@ -233,6 +233,12 @@ layout:decorate="~{layout/lteLayout.html}"
 
       //target 찾기
       const target = e.target
+
+      if (!target.getAttribute("data-rno")) {
+
+        return
+      }
+
       const rno = target.getAttribute("data-rno")
       //console.log(target.getAttribute("data-reply"))
 
@@ -301,10 +307,6 @@ layout:decorate="~{layout/lteLayout.html}"
       actionForm.setAttribute("method", `post`)
       actionForm.submit();
     })
-
-    
-
-    
     
 
   </script>

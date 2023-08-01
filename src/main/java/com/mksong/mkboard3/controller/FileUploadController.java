@@ -89,16 +89,14 @@ public class FileUploadController {
           Thumbnailator.createThumbnail(saveFile, thumbFile, 80, 80);
           //img true로 반환 getLink사용 위함
           result.setImg(true);
-        }
-
-        fileList.add(result);
-
-
+        }        
 
       } catch (IOException e) {
         e.printStackTrace();
+
       }
 
+      fileList.add(result);
 
     } 
 
