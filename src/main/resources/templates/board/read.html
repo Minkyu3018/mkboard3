@@ -188,7 +188,7 @@ layout:decorate="~{layout/lteLayout.html}"
 
         const {rno, reply, replyer} = list[i]
 
-        str += `<li data-rno=${rno}>No.${rno} | ${reply} | 【작성자 : ${replyer}】 </li>`
+        str += `<li data-rno=${rno} style="font-size:20px;">No.${rno} | ${reply} | 【작성자 : ${replyer}】 </li>`
       } //end for.
 
       replyUL.innerHTML = str

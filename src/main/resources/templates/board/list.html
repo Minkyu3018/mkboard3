@@ -54,8 +54,8 @@
 
               <td th:data-bno="${dto.bno}">
                 <a th:href="@{|http://localhost/${dto.fileName}|}" target="_blank" style="height: 80px;">
-                  <img th:if="${dto.fileName}" th:src="|http://localhost/${dto.fileName}|" height="80"/>
-                  <img th:unless="${dto.fileName}" th:src="|http://localhost/noimage.png|" width="80" />                  
+                  <img th:if="${dto.fileName}" th:src="|http://localhost/${dto.fileName}|" width="90" height="70"/>
+                  <img th:unless="${dto.fileName}" th:src="|http://localhost/noimage.png|" width="90" height="70" />                  
                 </a>
                 [[${dto.title}]]
               </td>
